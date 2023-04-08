@@ -6,14 +6,17 @@ intents.members = True  # enable the members intent
 intents.presences = True  # enable the presence intent
 
 bot = commands.Bot(command_prefix='BB ', intents=intents)
+TOKEN = 'MTA5NDI4NzU0MzE1Mjk0MzI5NA.Ge77GH.3cBJE0iJTuUtPNSkRxyOU4f5kjkUpnbmp72V2A'
+
 
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user.name} ({bot.user.id})')
 
-@bot.command(name='character')
-async def get_random_character(ctx, game: str):
-    # Create a dictionary of characters for each game
+@bot.slash_command(name='who-should-i-play', description='Get a random character suggestion for a specific game')
+async def on_interaction(ctx: discord.Interaction):
+    game = ctx.options['game'].lower()
+
     characters = {
         'apex': sorted(['Ash', 'Bangalore', 'Bloodhound', 'Catalyst', 'Caustic', 'Crypto', 'Fuse',
                         'Gibraltar', 'Horizon', 'Lifeline', 'Loba', 'Mad Maggie', 'Mirage', 'Newcastle', 'Octane',
@@ -29,12 +32,11 @@ async def get_random_character(ctx, game: str):
                             'Reyna', 'Sage', 'Skye', 'Sova', 'Viper', 'Yoru'])
     }
 
-    # Pick a random character from the corresponding game
     if game in characters:
         chosen_character = random.choice(characters[game])
-        await ctx.send(f'Your random character for {game} is {chosen_character}!')
+        await ctx.respond(f'You should play {chosen_character} in {game}!')
     else:
-        await ctx.send('Sorry, I do not recognize that game.')
+        await ctx.respond(f'Sorry, I do not recognize {game}.')
 
-bot.run('MTA5NDI4NzU0MzE1Mjk0MzI5NA.Ge77GH.3cBJE0iJTuUtPNSkRxyOU4f5kjkUpnbmp72V2A')
+bot.run(TOKEN)
 
