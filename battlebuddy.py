@@ -1,22 +1,20 @@
 import discord
-from discord.ext import commands
+import random
+from discord_slash import SlashCommand
 
 intents = discord.Intents.default()
-intents.members = True  # enable the members intent
-intents.presences = True  # enable the presence intent
+intents.members = True
 
-bot = commands.Bot(command_prefix='BB ', intents=intents)
-TOKEN = 'MTA5NDI4NzU0MzE1Mjk0MzI5NA.Ge77GH.3cBJE0iJTuUtPNSkRxyOU4f5kjkUpnbmp72V2A'
+client = discord.Client(intents=intents)
+slash = SlashCommand(client, sync_commands=True)
 
-
-@bot.event
+@client.event
 async def on_ready():
-    print(f'Logged in as {bot.user.name} ({bot.user.id})')
+    print(f'Logged in as {client.user.name} ({client.user.id})')
 
-@bot.slash_command(name='who-should-i-play', description='Get a random character suggestion for a specific game')
-async def on_interaction(ctx: discord.Interaction):
-    game = ctx.options['game'].lower()
-
+@slash.slash(name='who-should-i-play', description='Get a random character suggestion for a specific game')
+async def who_should_i_play(ctx, game: str):
+    # Create a dictionary of characters for each game
     characters = {
         'apex': sorted(['Ash', 'Bangalore', 'Bloodhound', 'Catalyst', 'Caustic', 'Crypto', 'Fuse',
                         'Gibraltar', 'Horizon', 'Lifeline', 'Loba', 'Mad Maggie', 'Mirage', 'Newcastle', 'Octane',
@@ -32,11 +30,12 @@ async def on_interaction(ctx: discord.Interaction):
                             'Reyna', 'Sage', 'Skye', 'Sova', 'Viper', 'Yoru'])
     }
 
-    if game in characters:
-        chosen_character = random.choice(characters[game])
-        await ctx.respond(f'You should play {chosen_character} in {game}!')
+    # Pick a random character from the corresponding game
+    if game.lower() in characters:
+        chosen_character = random.choice(characters[game.lower()])
+        await ctx.send(f'Your random character for {game} is {chosen_character}!')
     else:
-        await ctx.respond(f'Sorry, I do not recognize {game}.')
+        await ctx.send('Sorry, I do not recognize that game.')
 
-bot.run(TOKEN)
+client.run('MTA5NDI4NzU0MzE1Mjk0MzI5NA.Ge77GH.3cBJE0iJTuUtPNSkRxyOU4f5kjkUpnbmp72V2A')
 
