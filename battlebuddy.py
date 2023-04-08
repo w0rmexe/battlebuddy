@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 
 intents = discord.Intents.default()
-intents.members = True
+intents.members = True  # enable the members intent
+intents.presences = True  # enable the presence intent
 
 bot = commands.Bot(command_prefix='BB ', intents=intents)
 
