@@ -6,6 +6,7 @@ from discord_slash import SlashCommand, SlashContext
 intents = discord.Intents.default()
 intents.members = True
 
+bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 client = discord.Client(intents=intents)
 slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload=True)
 
