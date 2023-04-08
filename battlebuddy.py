@@ -12,8 +12,8 @@ slash = SlashCommand(client, sync_commands=True)
 async def on_ready():
     print(f'Logged in as {client.user.name} ({client.user.id})')
 
-@slash.slash(name='who-should-i-play', description='Get a random character suggestion for a specific game')
-async def who_should_i_play(ctx, game: str):
+@slash.slash(name='character', description='Get a random character suggestion for a specific game')
+async def character (ctx, game: str):
     # Create a dictionary of characters for each game
     characters = {
         'apex': sorted(['Ash', 'Bangalore', 'Bloodhound', 'Catalyst', 'Caustic', 'Crypto', 'Fuse',
