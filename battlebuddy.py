@@ -18,18 +18,18 @@ async def on_message(message):
 
         # Create a dictionary of characters for each game
         characters = {
-            'apex': sorted(['Bangalore', 'Bloodhound', 'Caustic', 'Crypto', 'Fuse',
-                            'Gibraltar', 'Horizon', 'Lifeline', 'Mirage', 'Octane',
-                            'Pathfinder', 'Rampart', 'Revenant', 'Valkyrie', 'Wraith']),
-            'overwatch': sorted(['Ashe', 'Baptiste', 'Brigitte', 'D.Va', 'Echo',
-                                 'Genji', 'Hanzo', 'Junkrat', 'Lúcio', 'McCree',
-                                 'Mei', 'Mercy', 'Moira', 'Orisa', 'Pharah',
-                                 'Reaper', 'Roadhog', 'Sigma', 'Soldier: 76',
-                                 'Symmetra', 'Torbjörn', 'Tracer', 'Widowmaker',
-                                 'Winston', 'Zarya', 'Zenyatta']),
-            'valorant': sorted(['Astra', 'Breach', 'Brimstone', 'Cypher', 'Jett',
-                                'Kay/o', 'Killjoy', 'Omen', 'Phoenix', 'Reyna',
-                                'Sage', 'Skye', 'Sova', 'Viper', 'Yoru'])
+            'apex': sorted(['Ash', 'Bangalore', 'Bloodhound', 'Catalyst', 'Caustic', 'Crypto', 'Fuse',
+                            'Gibraltar', 'Horizon', 'Lifeline', 'Loba', 'Mad Maggie', 'Mirage', 'Newcastle', 'Octane',
+                            'Pathfinder', 'Rampart', 'Revenant', 'Seer', 'Valkyrie', 'Vantage', 'Wattson', 'Wraith']),
+            'overwatch': sorted(['Ana', 'Ashe', 'Baptiste', 'Bastion', 'Brigitte', 'Cassidy', 'D.Va', 'Doomfist', 'Echo',
+                                 'Genji', 'Hanzo', 'Junker Queen', 'Junkrat', 'Kiriko', 'Lúcio',
+                                 'Mei', 'Mercy', 'Moira', 'Orisa', 'Pharah', 'Ramattra',
+                                 'Reaper', 'Reinhardt', 'Roadhog', 'Sigma', 'Soldier: 76', 'Sojourn',
+                                 'Sombra', 'Symmetra', 'Torbjörn', 'Tracer', 'Widowmaker',
+                                 'Winston', 'Wrecking Ball', 'Zarya', 'Zenyatta']),
+            'valorant': sorted(['Astra', 'Breach', 'Brimstone', 'Chamber', 'Cypher', 'Fade',
+                                'Gekko', 'Harbor', 'Jett', 'Kay/o', 'Killjoy', 'Neon', 'Omen', 'Phoenix', 'Raze',
+                                'Reyna', 'Sage', 'Skye', 'Sova', 'Viper', 'Yoru'])
         }
 
         # Pick a random character from the corresponding game
