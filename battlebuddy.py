@@ -6,14 +6,14 @@ intents = discord.Intents.default()
 intents.members = True
 
 client = discord.Client(intents=intents)
-slash = SlashCommand(client, sync_commands=True)
+slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload=True)
 
 @client.event
 async def on_ready():
     print(f'Logged in as {client.user.name} ({client.user.id})')
 
-@slash.slash(name='character', description='Get a random character suggestion for a specific game')
-async def character (ctx, game: str):
+@slash.slash(name='who', description='Get a random character suggestion for a specific game')
+async def who(ctx, game: str):
     # Create a dictionary of characters for each game
     characters = {
         'apex': sorted(['Ash', 'Bangalore', 'Bloodhound', 'Catalyst', 'Caustic', 'Crypto', 'Fuse',
@@ -38,4 +38,3 @@ async def character (ctx, game: str):
         await ctx.send('Sorry, I do not recognize that game.')
 
 client.run('MTA5NDI4NzU0MzE1Mjk0MzI5NA.Ge77GH.3cBJE0iJTuUtPNSkRxyOU4f5kjkUpnbmp72V2A')
-
