@@ -1,6 +1,6 @@
 import discord
 import random
-from discord-py-slash-command import SlashCommand
+from discord_py_slash_command import SlashCommand
 
 intents = discord.Intents.default()
 intents.members = True
