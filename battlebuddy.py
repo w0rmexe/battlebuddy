@@ -13,6 +13,7 @@ async def on_ready():
 
 @bot.command(name='who')
 async def who(ctx, game: str):
+    print('Command called')
     # Create a dictionary of characters for each game
     characters = {
         'apex': sorted(['Ash', 'Bangalore', 'Bloodhound', 'Caustic', 'Crypto', 'Fuse',
