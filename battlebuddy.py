@@ -1,40 +1,18 @@
 import discord
 import random
 from discord.ext import commands
-from discord_slash import SlashCommand, SlashContext
-from discord_slash.utils import manage_commands
 
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
-slash = SlashCommand(bot, sync_commands=True, sync_on_cog_reload=True)
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user.name} ({bot.user.id})')
 
-@slash.slash(name='who', description='Get a random character suggestion for a specific game', options=[manage_commands.create_option(
-    name="game",
-    description="The name of the game you want a character for",
-    option_type=3,
-    required=True,
-    choices=[
-        manage_commands.create_choice(
-            name="Apex Legends",
-            value="apex"
-        ),
-        manage_commands.create_choice(
-            name="Overwatch",
-            value="overwatch"
-        ),
-        manage_commands.create_choice(
-            name="Valorant",
-            value="valorant"
-        )
-    ]
-)])
-async def who(ctx: SlashContext, game: str):
+@bot.command(name='who')
+async def who(ctx, game: str):
     # Create a dictionary of characters for each game
     characters = {
         'apex': sorted(['Ash', 'Bangalore', 'Bloodhound', 'Catalyst', 'Caustic', 'Crypto', 'Fuse',
