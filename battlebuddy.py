@@ -13,22 +13,20 @@ async def on_ready():
 
 @bot.command(name='who')
 async def who(ctx, game: str):
-    print('Command called')
     # Create a dictionary of characters for each game
     characters = {
-        'apex': sorted(['Ash', 'Bangalore', 'Bloodhound', 'Caustic', 'Crypto', 'Fuse',
-                        'Gibraltar', 'Horizon', 'Lifeline', 'Loba', 'Mirage', 'Octane',
-                        'Pathfinder', 'Rampart', 'Revenant', 'Seer', 'Valkyrie', 'Wattson', 'Wraith']),
-        'overwatch': sorted(['Ana', 'Ashe', 'Baptiste', 'Bastion', 'Brigitte', 'D.Va', 'Doomfist', 'Echo',
-                             'Genji', 'Hanzo', 'Junkrat', 'Lúcio',
-                             'McCree', 'Mei', 'Mercy', 'Moira', 'Orisa', 'Pharah',
-                             'Reaper', 'Reinhardt', 'Roadhog', 'Sigma', 'Soldier: 76',
-                             'Sombra', 'Symmetra', 'Torbjörn', 'Tracer', 'Widowmaker',
-                             'Winston', 'Wrecking Ball', 'Zarya', 'Zenyatta']),
-        'valorant': sorted(['Astra', 'Breach', 'Brimstone', 'Cypher',
-                            'Jett', 'Kay/O', 'K/O', 'Killjoy',
-                            'Omen', 'Phoenix', 'Raze',
-                            'Reyna', 'Sage', 'Skye', 'Sova', 'Viper', 'Yoru'])
+        'apex': ['Ash', 'Bangalore', 'Bloodhound', 'Catalyst', 'Caustic', 'Crypto', 'Fuse',
+                 'Gibraltar', 'Horizon', 'Lifeline', 'Loba', 'Mad Maggie', 'Mirage', 'Newcastle', 'Octane',
+                 'Pathfinder', 'Rampart', 'Revenant', 'Seer', 'Valkyrie', 'Vantage', 'Wattson', 'Wraith'],
+        'overwatch': ['Ana', 'Ashe', 'Baptiste', 'Bastion', 'Brigitte', 'Cassidy', 'D.Va', 'Doomfist', 'Echo',
+                      'Genji', 'Hanzo', 'Junker Queen', 'Junkrat', 'Kiriko', 'Lúcio',
+                      'Mei', 'Mercy', 'Moira', 'Orisa', 'Pharah', 'Ramattra',
+                      'Reaper', 'Reinhardt', 'Roadhog', 'Sigma', 'Soldier: 76', 'Sojourn',
+                      'Sombra', 'Symmetra', 'Torbjörn', 'Tracer', 'Widowmaker',
+                      'Winston', 'Wrecking Ball', 'Zarya', 'Zenyatta'],
+        'valorant': ['Astra', 'Breach', 'Brimstone', 'Chamber', 'Cypher', 'Fade',
+                     'Gekko', 'Harbor', 'Jett', 'Kay/o', 'Killjoy', 'Neon', 'Omen', 'Phoenix', 'Raze',
+                     'Reyna', 'Sage', 'Skye', 'Sova', 'Viper', 'Yoru']
     }
 
     # Pick a random character from the corresponding game
