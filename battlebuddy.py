@@ -16,17 +16,17 @@ async def who(ctx, game: str):
     # Create a dictionary of characters for each game
     characters = {
         'apex': ['Ash', 'Bangalore', 'Bloodhound', 'Catalyst', 'Caustic', 'Crypto', 'Fuse',
-                 'Gibraltar', 'Horizon', 'Lifeline', 'Loba', 'Mad Maggie', 'Mirage', 'Newcastle', 'Octane',
-                 'Pathfinder', 'Rampart', 'Revenant', 'Seer', 'Valkyrie', 'Vantage', 'Wattson', 'Wraith'],
+                        'Gibraltar', 'Horizon', 'Lifeline', 'Loba', 'Mad Maggie', 'Mirage', 'Newcastle', 'Octane',
+                        'Pathfinder', 'Rampart', 'Revenant', 'Seer', 'Valkyrie', 'Vantage', 'Wattson', 'Wraith'],
         'overwatch': ['Ana', 'Ashe', 'Baptiste', 'Bastion', 'Brigitte', 'Cassidy', 'D.Va', 'Doomfist', 'Echo',
-                      'Genji', 'Hanzo', 'Junker Queen', 'Junkrat', 'Kiriko', 'Lúcio',
-                      'Mei', 'Mercy', 'Moira', 'Orisa', 'Pharah', 'Ramattra',
-                      'Reaper', 'Reinhardt', 'Roadhog', 'Sigma', 'Soldier: 76', 'Sojourn',
-                      'Sombra', 'Symmetra', 'Torbjörn', 'Tracer', 'Widowmaker',
-                      'Winston', 'Wrecking Ball', 'Zarya', 'Zenyatta'],
+                             'Genji', 'Hanzo', 'Junker Queen', 'Junkrat', 'Kiriko', 'Lúcio',
+                             'Mei', 'Mercy', 'Moira', 'Orisa', 'Pharah', 'Ramattra',
+                             'Reaper', 'Reinhardt', 'Roadhog', 'Sigma', 'Soldier: 76', 'Sojourn',
+                             'Sombra', 'Symmetra', 'Torbjörn', 'Tracer', 'Widowmaker',
+                             'Winston', 'Wrecking Ball', 'Zarya', 'Zenyatta'],
         'valorant': ['Astra', 'Breach', 'Brimstone', 'Chamber', 'Cypher', 'Fade',
-                     'Gekko', 'Harbor', 'Jett', 'Kay/o', 'Killjoy', 'Neon', 'Omen', 'Phoenix', 'Raze',
-                     'Reyna', 'Sage', 'Skye', 'Sova', 'Viper', 'Yoru']
+                            'Gekko', 'Harbor', 'Jett', 'Kay/o', 'Killjoy', 'Neon', 'Omen', 'Phoenix', 'Raze',
+                            'Reyna', 'Sage', 'Skye', 'Sova', 'Viper', 'Yoru']
     }
 
     # Pick a random character from the corresponding game
