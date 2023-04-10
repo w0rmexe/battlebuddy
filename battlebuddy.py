@@ -1,5 +1,4 @@
 import discord
-import random
 from discord.ext import commands
 
 intents = discord.Intents.default()
@@ -11,7 +10,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f'Logged in as {bot.user.name} ({bot.user.id})')
 
-@bot.command(name='who')
+@bot.slash_command(name="who")
 async def who(ctx, game: str):
     # Create a dictionary of characters for each game
     characters = {
