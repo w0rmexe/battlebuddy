@@ -1,6 +1,10 @@
 import discord
 from discord.ext import commands
 from dislash import slash_command
+import random
+
+# Add your token here
+TOKEN = 'your_token_here'
 
 intents = discord.Intents.default()
 intents.members = True
@@ -11,7 +15,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f'Logged in as {bot.user.name} ({bot.user.id})')
 
-@slash_command(name="who")
+@slash_command(name="who", description="Picks a random character from a game")
 async def who(ctx, game: str):
     # Create a dictionary of characters for each game
     characters = {
@@ -36,4 +40,5 @@ async def who(ctx, game: str):
     else:
         await ctx.send('Sorry, I do not recognize that game.')
 
+# Start the bot
 bot.run('MTA5NDI4NzU0MzE1Mjk0MzI5NA.Gj5g_-.PcxvZc-ElGGbJjTq3mTyu5DAKaE7u8yJkrlykE')
