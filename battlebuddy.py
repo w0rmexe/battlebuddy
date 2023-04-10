@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from dislash import slash_command
 
 intents = discord.Intents.default()
 intents.members = True
@@ -10,7 +11,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f'Logged in as {bot.user.name} ({bot.user.id})')
 
-@bot.slash_command(name="who")
+@slash_command(name="who")
 async def who(ctx, game: str):
     # Create a dictionary of characters for each game
     characters = {
