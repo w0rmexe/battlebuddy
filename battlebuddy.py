@@ -41,4 +41,3 @@ async def who(ctx, game: str):
         await ctx.send('Sorry, I do not recognize that game.')
 
 # Start the bot
-bot.run('MTA5NDI4NzU0MzE1Mjk0MzI5NA.Gj5g_-.PcxvZc-ElGGbJjTq3mTyu5DAKaE7u8yJkrlykE')
