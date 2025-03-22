@@ -1,7 +1,18 @@
 """
 BattleBuddy Discord Bot
 A bot that helps users select random characters from various games.
-Features include character selection, statistics tracking, and favorites management.
+
+Features:
+- Random character selection from multiple games
+- Character statistics tracking
+- User favorites management
+- Role-based character filtering
+- Command cooldown system
+- Detailed character information display
+
+The bot uses slash commands for better user experience and includes
+features like cooldowns to prevent spam and database persistence
+for tracking statistics and favorites.
 """
 
 import discord
@@ -14,9 +25,9 @@ from dotenv import load_dotenv
 from config import CHARACTERS, COMMAND_PREFIX, BOT_DESCRIPTION, COMMAND_COOLDOWN
 from datetime import datetime, timedelta
 import sqlite3
-from typing import Optional
+from typing import Optional, Dict, List, Tuple
 
-# Set up logging
+# Set up logging with both file and console handlers
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -27,7 +38,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Load environment variables
+# Load environment variables from .env file
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
@@ -35,27 +46,39 @@ if not TOKEN:
     logger.error("No Discord token found in environment variables!")
     raise ValueError("DISCORD_TOKEN environment variable is required")
 
-# Initialize bot with intents
+# Initialize bot with required intents
 intents = discord.Intents.default()
-intents.message_content = True
-intents.members = True
-intents.guilds = True
+intents.message_content = True  # Required for message content access
+intents.members = True          # Required for member-related operations
+intents.guilds = True          # Required for server-related operations
 bot = commands.Bot(command_prefix=COMMAND_PREFIX, intents=intents, description=BOT_DESCRIPTION)
 
-# Cooldown tracking
-cooldowns = {}
+# Global dictionary to track user command cooldowns
+# Format: {user_id: datetime when cooldown expires}
+cooldowns: Dict[int, datetime] = {}
 
 class Database:
-    """Database class to handle character statistics and user favorites"""
+    """Database class to handle character statistics and user favorites.
+    
+    This class manages all database operations including:
+    - Character pick statistics tracking
+    - User favorites management
+    - Database initialization and connection handling
+    """
     
     def __init__(self):
-        """Initialize database connection and create necessary tables"""
+        """Initialize database connection and create necessary tables."""
         self.conn = sqlite3.connect('battlebuddy.db')
         self.cursor = self.conn.cursor()
         self.create_tables()
     
     def create_tables(self):
-        """Create database tables if they don't exist"""
+        """Create database tables if they don't exist.
+        
+        Creates two main tables:
+        1. character_stats: Tracks pick statistics for each character
+        2. user_favorites: Stores user's favorite characters
+        """
         # Table for tracking character pick statistics
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS character_stats (
@@ -78,7 +101,16 @@ class Database:
         self.conn.commit()
     
     def record_character_pick(self, game: str, character: str):
-        """Record a character pick in the statistics"""
+        """Record a character pick in the statistics.
+        
+        Args:
+            game (str): The game name (e.g., 'apex', 'overwatch')
+            character (str): The character name that was picked
+            
+        Note:
+            Uses SQLite's UPSERT functionality to either insert a new record
+            or increment the pick count for existing records
+        """
         self.cursor.execute('''
             INSERT INTO character_stats (game, character, picks)
             VALUES (?, ?, 1)
@@ -86,8 +118,16 @@ class Database:
         ''', (game, character))
         self.conn.commit()
     
-    def get_character_stats(self, game: Optional[str] = None) -> list:
-        """Retrieve character pick statistics, optionally filtered by game"""
+    def get_character_stats(self, game: Optional[str] = None) -> List[Tuple]:
+        """Retrieve character pick statistics, optionally filtered by game.
+        
+        Args:
+            game (Optional[str]): If provided, filter stats for this game only
+            
+        Returns:
+            List[Tuple]: List of tuples containing (character, picks) or (game, character, picks)
+                        depending on whether game filter is applied
+        """
         if game:
             self.cursor.execute('''
                 SELECT character, picks FROM character_stats
@@ -101,7 +141,13 @@ class Database:
         return self.cursor.fetchall()
     
     def add_favorite(self, user_id: int, game: str, character: str):
-        """Add a character to a user's favorites"""
+        """Add a character to a user's favorites.
+        
+        Args:
+            user_id (int): Discord user ID
+            game (str): Game name
+            character (str): Character name to add as favorite
+        """
         self.cursor.execute('''
             INSERT INTO user_favorites (user_id, game, character)
             VALUES (?, ?, ?)
@@ -109,15 +155,28 @@ class Database:
         self.conn.commit()
     
     def remove_favorite(self, user_id: int, game: str, character: str):
-        """Remove a character from a user's favorites"""
+        """Remove a character from a user's favorites.
+        
+        Args:
+            user_id (int): Discord user ID
+            game (str): Game name
+            character (str): Character name to remove from favorites
+        """
         self.cursor.execute('''
             DELETE FROM user_favorites
             WHERE user_id = ? AND game = ? AND character = ?
         ''', (user_id, game, character))
         self.conn.commit()
     
-    def get_favorites(self, user_id: int) -> list:
-        """Get all favorite characters for a user"""
+    def get_favorites(self, user_id: int) -> List[Tuple[str, str]]:
+        """Get all favorite characters for a user.
+        
+        Args:
+            user_id (int): Discord user ID
+            
+        Returns:
+            List[Tuple[str, str]]: List of (game, character) tuples
+        """
         self.cursor.execute('''
             SELECT game, character FROM user_favorites
             WHERE user_id = ?
@@ -128,19 +187,39 @@ class Database:
 db = Database()
 
 def check_cooldown(user_id: int) -> bool:
-    """Check if a user is on cooldown for commands"""
+    """Check if a user is on cooldown for commands.
+    
+    Args:
+        user_id (int): Discord user ID to check
+        
+    Returns:
+        bool: True if user can use commands, False if on cooldown
+    """
     if user_id in cooldowns:
         if datetime.now() < cooldowns[user_id]:
             return False
     return True
 
 def set_cooldown(user_id: int):
-    """Set cooldown for a user after command use"""
+    """Set cooldown for a user after command use.
+    
+    Args:
+        user_id (int): Discord user ID to set cooldown for
+    """
     cooldowns[user_id] = datetime.now() + timedelta(seconds=COMMAND_COOLDOWN)
 
 @bot.event
 async def on_ready():
-    """Event handler for when the bot is ready"""
+    """Event handler for when the bot is ready.
+    
+    Performs two main tasks:
+    1. Logs successful bot login
+    2. Syncs slash commands with Discord
+    
+    Note:
+        Command sync is required for slash commands to work properly
+        and must be done after the bot is ready
+    """
     logger.info(f'Logged in as {bot.user.name}')
     try:
         synced = await bot.tree.sync()

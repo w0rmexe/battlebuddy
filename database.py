@@ -1,24 +1,61 @@
 """
 Database module for BattleBuddy Discord bot.
 Handles character statistics and user favorites.
+
+This module provides database operations for:
+1. Tracking character pick statistics across different games
+2. Managing user's favorite characters
+3. Maintaining pick history and usage patterns
 """
 import sqlite3
 import logging
 from datetime import datetime
+from typing import List, Tuple, Optional
 
 logger = logging.getLogger(__name__)
 
 class Database:
+    """Database handler for BattleBuddy bot.
+    
+    Manages all database operations including:
+    - Character statistics tracking
+    - User favorites management
+    - Database initialization and connection handling
+    """
+    
     def __init__(self, db_path='battlebuddy.db'):
+        """Initialize database connection and create necessary tables.
+        
+        Args:
+            db_path (str): Path to the SQLite database file
+        """
         self.db_path = db_path
         self.init_db()
 
     def get_connection(self):
-        """Create and return a database connection."""
+        """Create and return a database connection.
+        
+        Returns:
+            sqlite3.Connection: Database connection object
+        """
         return sqlite3.connect(self.db_path)
 
     def init_db(self):
-        """Initialize the database with required tables."""
+        """Initialize the database with required tables.
+        
+        Creates two main tables:
+        1. character_stats: Tracks pick statistics for each character
+           - game: The game name
+           - character: Character name
+           - picks: Number of times picked
+           - last_picked: Timestamp of last pick
+           
+        2. user_favorites: Stores user's favorite characters
+           - user_id: Discord user ID
+           - game: Game name
+           - character: Character name
+           - added_at: When the favorite was added
+        """
         try:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
@@ -48,52 +85,72 @@ class Database:
                 ''')
                 
                 conn.commit()
-                logger.info("Database initialized successfully")
-        except Exception as e:
+                logger.info("Database tables initialized successfully")
+        except sqlite3.Error as e:
             logger.error(f"Error initializing database: {e}")
             raise
 
     def record_character_pick(self, game: str, character: str):
-        """Record a character pick in the statistics."""
+        """Record a character pick in the statistics.
+        
+        Args:
+            game (str): The game name (e.g., 'apex', 'overwatch')
+            character (str): The character name that was picked
+            
+        Note:
+            Uses SQLite's UPSERT functionality to either insert a new record
+            or increment the pick count for existing records
+        """
         try:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute('''
                     INSERT INTO character_stats (game, character, picks, last_picked)
-                    VALUES (?, ?, 1, ?)
-                    ON CONFLICT(game, character) 
-                    DO UPDATE SET picks = picks + 1, last_picked = ?
-                ''', (game, character, datetime.now(), datetime.now()))
+                    VALUES (?, ?, 1, CURRENT_TIMESTAMP)
+                    ON CONFLICT(game, character) DO UPDATE 
+                    SET picks = picks + 1, last_picked = CURRENT_TIMESTAMP
+                ''', (game, character))
                 conn.commit()
-        except Exception as e:
+        except sqlite3.Error as e:
             logger.error(f"Error recording character pick: {e}")
             raise
 
-    def get_character_stats(self, game: str = None):
-        """Get statistics for all characters or for a specific game."""
+    def get_character_stats(self, game: Optional[str] = None) -> List[Tuple]:
+        """Retrieve character pick statistics, optionally filtered by game.
+        
+        Args:
+            game (Optional[str]): If provided, filter stats for this game only
+            
+        Returns:
+            List[Tuple]: List of tuples containing (character, picks) or (game, character, picks)
+                        depending on whether game filter is applied
+        """
         try:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
                 if game:
                     cursor.execute('''
-                        SELECT game, character, picks, last_picked
-                        FROM character_stats
-                        WHERE game = ?
-                        ORDER BY picks DESC
+                        SELECT character, picks FROM character_stats
+                        WHERE game = ? ORDER BY picks DESC
                     ''', (game,))
                 else:
                     cursor.execute('''
-                        SELECT game, character, picks, last_picked
-                        FROM character_stats
+                        SELECT game, character, picks FROM character_stats
                         ORDER BY game, picks DESC
                     ''')
                 return cursor.fetchall()
-        except Exception as e:
-            logger.error(f"Error getting character stats: {e}")
+        except sqlite3.Error as e:
+            logger.error(f"Error retrieving character stats: {e}")
             raise
 
     def add_favorite(self, user_id: int, game: str, character: str):
-        """Add a character to a user's favorites."""
+        """Add a character to a user's favorites.
+        
+        Args:
+            user_id (int): Discord user ID
+            game (str): Game name
+            character (str): Character name to add as favorite
+        """
         try:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
@@ -102,15 +159,18 @@ class Database:
                     VALUES (?, ?, ?)
                 ''', (user_id, game, character))
                 conn.commit()
-                return True
-        except sqlite3.IntegrityError:
-            return False  # Already in favorites
-        except Exception as e:
+        except sqlite3.Error as e:
             logger.error(f"Error adding favorite: {e}")
             raise
 
     def remove_favorite(self, user_id: int, game: str, character: str):
-        """Remove a character from a user's favorites."""
+        """Remove a character from a user's favorites.
+        
+        Args:
+            user_id (int): Discord user ID
+            game (str): Game name
+            character (str): Character name to remove from favorites
+        """
         try:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
@@ -119,23 +179,27 @@ class Database:
                     WHERE user_id = ? AND game = ? AND character = ?
                 ''', (user_id, game, character))
                 conn.commit()
-                return cursor.rowcount > 0
-        except Exception as e:
+        except sqlite3.Error as e:
             logger.error(f"Error removing favorite: {e}")
             raise
 
-    def get_user_favorites(self, user_id: int):
-        """Get all favorites for a user."""
+    def get_favorites(self, user_id: int) -> List[Tuple[str, str]]:
+        """Get all favorite characters for a user.
+        
+        Args:
+            user_id (int): Discord user ID
+            
+        Returns:
+            List[Tuple[str, str]]: List of (game, character) tuples
+        """
         try:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute('''
-                    SELECT game, character, added_at
-                    FROM user_favorites
+                    SELECT game, character FROM user_favorites
                     WHERE user_id = ?
-                    ORDER BY added_at DESC
                 ''', (user_id,))
                 return cursor.fetchall()
-        except Exception as e:
-            logger.error(f"Error getting user favorites: {e}")
+        except sqlite3.Error as e:
+            logger.error(f"Error retrieving favorites: {e}")
             raise 

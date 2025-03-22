@@ -1,9 +1,24 @@
 """
 Configuration file for BattleBuddy Discord bot.
 Contains game characters and other configuration settings.
+
+This module defines:
+1. Character lists for each supported game
+2. Role types and role mappings for characters
+3. Bot configuration settings
+4. Command cooldown settings
 """
 
+# Bot configuration settings
+COMMAND_PREFIX = '!'  # Prefix for legacy text commands
+BOT_DESCRIPTION = 'A bot that helps you select random characters from various games'
+COMMAND_COOLDOWN = 5  # Cooldown period in seconds between command uses
+
 # Dictionary of characters for each supported game with their roles and descriptions
+# Each game entry contains:
+# - characters: List of available characters
+# - roles: Available role types
+# - role_mapping: Dictionary mapping characters to their roles
 CHARACTERS = {
     'apex': {
         'characters': [
@@ -48,7 +63,7 @@ CHARACTERS = {
             'Genji', 'Hanzo', 'Hazard', 'Illari', 'Junker Queen', 'Junkrat', 'Kiriko', 'Lúcio', 'Mei',
             'Mercy', 'Moira', 'Orisa', 'Pharah', 'Ramattra', 'Reaper', 'Reinhardt', 'Roadhog', 'Sigma',
             'Soldier: 76', 'Sojourn', 'Sombra', 'Symmetra', 'Torbjörn', 'Tracer', 'Widowmaker', 'Winston',
-            'Wrecking Ball', 'Zarya', 'Zenyatta', 'Juno', 'Mauga', 'Venture', 'Freja'
+            'Wrecking Ball', 'Zarya', 'Zenyatta'
         ],
         'roles': ['Tank', 'Damage', 'Support'],
         'role_mapping': {
@@ -63,7 +78,7 @@ CHARACTERS = {
             'Echo': 'Damage',
             'Genji': 'Damage',
             'Hanzo': 'Damage',
-            'Hazard': 'Tank',
+            'Hazard': 'Damage',
             'Illari': 'Support',
             'Junker Queen': 'Tank',
             'Junkrat': 'Damage',
@@ -89,11 +104,7 @@ CHARACTERS = {
             'Winston': 'Tank',
             'Wrecking Ball': 'Tank',
             'Zarya': 'Tank',
-            'Zenyatta': 'Support',
-            'Juno': 'Support',
-            'Mauga': 'Tank',
-            'Venture': 'Damage',
-            'Freja': 'Damage'
+            'Zenyatta': 'Support'
         }
     },
     'valorant': {
@@ -274,11 +285,64 @@ CHARACTERS = {
     }
 }
 
-# Command prefix for legacy commands
-COMMAND_PREFIX = "!"
+# Character descriptions and additional information
+CHARACTER_INFO = {
+    'apex': {
+        'Alter': {
+            'description': 'A mysterious character with unique abilities',
+            'difficulty': 'Medium',
+            'release_date': '2024'
+        },
+        'Ash': {
+            'description': 'A former Apex Predator turned mercenary',
+            'difficulty': 'Medium',
+            'release_date': '2021'
+        },
+        # ... Add descriptions for other Apex characters
+    },
+    'overwatch': {
+        'Ana': {
+            'description': 'A skilled sniper and healer',
+            'difficulty': 'Hard',
+            'release_date': '2016'
+        },
+        'Ashe': {
+            'description': 'A sharpshooter with a powerful rifle',
+            'difficulty': 'Medium',
+            'release_date': '2018'
+        },
+        # ... Add descriptions for other Overwatch characters
+    }
+}
 
-# Bot description for help command
-BOT_DESCRIPTION = "A Discord bot that helps you randomly select characters from various games."
+# Game-specific settings and configurations
+GAME_SETTINGS = {
+    'apex': {
+        'max_team_size': 3,
+        'game_modes': ['Battle Royale', 'Arena', 'Control'],
+        'update_frequency': 'Seasonal'
+    },
+    'overwatch': {
+        'max_team_size': 5,
+        'game_modes': ['Quick Play', 'Competitive', 'Arcade'],
+        'update_frequency': 'Monthly'
+    }
+}
 
-# Cooldown settings (in seconds)
-COMMAND_COOLDOWN = 5 
+# Error messages and responses
+ERROR_MESSAGES = {
+    'invalid_game': 'Invalid game selected. Please choose from the available games.',
+    'invalid_role': 'Invalid role selected. Please choose from the available roles.',
+    'cooldown': 'Please wait before using this command again.',
+    'database_error': 'An error occurred while accessing the database.',
+    'no_favorites': 'You haven\'t added any favorites yet.',
+    'character_not_found': 'Character not found in the specified game.'
+}
+
+# Success messages and responses
+SUCCESS_MESSAGES = {
+    'favorite_added': 'Character added to your favorites!',
+    'favorite_removed': 'Character removed from your favorites.',
+    'stats_updated': 'Character statistics updated successfully.',
+    'command_success': 'Command executed successfully.'
+} 
