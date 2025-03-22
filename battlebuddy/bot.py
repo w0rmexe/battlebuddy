@@ -28,11 +28,15 @@ import sqlite3
 from typing import Optional, Dict, List, Tuple
 
 # Set up logging with both file and console handlers
+# Create logs directory if it doesn't exist
+os.makedirs('logs', exist_ok=True)
+
+# Configure logging to only include relevant bot information
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('battlebuddy.log'),
+        logging.FileHandler('logs/battlebuddy.log'),
         logging.StreamHandler()
     ]
 )

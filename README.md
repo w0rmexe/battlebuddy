@@ -1,6 +1,6 @@
 # BattleBuddy Discord Bot
 
-A Discord bot that helps you randomly select characters from various games.
+A Discord bot that helps you randomly select characters from various games. Perfect for indecisive players who want to try different characters!
 
 ## Features
 
@@ -11,16 +11,19 @@ A Discord bot that helps you randomly select characters from various games.
 - Rich embedded messages
 - Command cooldowns
 - Error handling
+- Database persistence for stats and favorites
 
 ## Supported Games
 
 ### Apex Legends
 - Roles: Assault, Skirmisher, Recon, Support, Controller
 - 26 characters
+- Seasonal updates
 
 ### Overwatch
 - Roles: Tank, Damage, Support
 - 39 characters
+- Monthly updates
 
 ### Valorant
 - Roles: Controller, Duelist, Initiator, Sentinel
@@ -77,23 +80,36 @@ A Discord bot that helps you randomly select characters from various games.
 
 ## Development
 
+### Project Structure
+```
+battlebuddy/
+├── battlebuddy.py    # Main bot application
+├── database.py       # Database operations
+├── config.py         # Configuration and game data
+├── test_database.py  # Database tests
+├── requirements.txt  # Project dependencies
+└── README.md         # Project documentation
+```
+
 ### Running Tests
-   ```bash
-   pytest
-   ```
+```bash
+python -m pytest test_database.py
+```
 
 ### Adding New Games
 To add a new game:
 1. Add the game to the `CHARACTERS` dictionary in `config.py`
 2. Include character list, roles, and role mappings
-3. Update the README.md with the new game information
+3. Add character descriptions in `CHARACTER_INFO`
+4. Add game settings in `GAME_SETTINGS`
+5. Update the README.md with the new game information
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Create a Pull Request
 
 ## License
@@ -103,3 +119,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 If you encounter any issues or have questions, please open an issue in the GitHub repository.
+
+## Acknowledgments
+
+- Discord.py library and its contributors
+- The gaming communities for their character data
+- All contributors to this project
